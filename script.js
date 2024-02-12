@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchDirectoryListing(imagePath)
         .then(images => {
             // Generate HTML code for each image with correct path
+            console.log(imagePath);
             const imageHTML = images.map(image => `<img class="myuploads" src="${image}" alt="${image}">`).join('');
 
             // Append the generated HTML code to the gallery container
