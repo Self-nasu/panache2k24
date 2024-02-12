@@ -1,2 +1,1 @@
-# panache2k24
-website for panache 2024.
+# Panache 2024 Website
