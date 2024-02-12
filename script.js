@@ -3,34 +3,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const galleryContainer = document.getElementById("imageGallery");
 
     // Path to the folder containing images
-    const imagePath = "imgs/";
+    const imagePath = "imgs";
 
-    // Fetch images from the folder
-    fetchImages(imagePath)
+    // Fetch the directory listing
+    fetchDirectoryListing(imagePath)
         .then(images => {
-            // Generate HTML code for each image
-            const imageHTML = images.map(image => `<img src="${imagePath}${image}" alt="${image}">`).join('');
+            // Generate HTML code for each image with correct path
+            const imageHTML = images.map(image => `<img class="myuploads" src="${image}" alt="${image}">`).join('');
 
             // Append the generated HTML code to the gallery container
             galleryContainer.innerHTML = imageHTML;
         })
         .catch(error => {
-            console.error("Error fetching images:", error);
+            console.error("Error fetching directory listing:", error);
         });
 });
 
-// Function to fetch images from the specified folder
-function fetchImages(path) {
+// Function to fetch directory listing and extract image filenames
+function fetchDirectoryListing(path) {
     return new Promise((resolve, reject) => {
-        // Use XMLHttpRequest or fetch API to get the list of images
+        // Use XMLHttpRequest or fetch API to get the directory listing
         const xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
 
         xhr.onload = function () {
             if (xhr.status == 200) {
-                // Split the response into an array of image file names
-                const images = xhr.responseText.split('\n').filter(image => image.trim() !== "");
-                resolve(images);
+                // Extract image filenames from the directory listing HTML
+                const filenames = extractImageFilenames(xhr.responseText);
+                resolve(filenames);
             } else {
                 reject(xhr.statusText);
             }
@@ -42,4 +42,17 @@ function fetchImages(path) {
 
         xhr.send();
     });
+}
+
+// Function to extract image filenames from directory listing HTML
+function extractImageFilenames(directoryListingHTML) {
+    const regex = /<a[^>]*href=['"]([^'"]+\.(?:png|jpg|jpeg|gif))['"][^>]*>/g;
+    const matches = [];
+    let match;
+
+    while ((match = regex.exec(directoryListingHTML)) !== null) {
+        matches.push(match[1]);
+    }
+
+    return matches;
 }
